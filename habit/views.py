@@ -25,8 +25,8 @@ class UserHabitViewSet(ModelViewSet):
     serializer_class = HabitSerializer
     pagination_class = CustomPagination
 
-    @action
-    def time_lead(self, request, pk):
+    @action(methods=['get'], detail=True)  # Указываешь методы и что это действие для одного объекта
+    def time_lead(self, request, pk=None):  # pk должен быть опциональным (detail=True)
         habit = get_object_or_404(Habit, pk=pk)
         if habit.time_lead.filter(pk=request.user.pk) == now_localtime:
             send_inform_habit.delay(habit.user.email)
