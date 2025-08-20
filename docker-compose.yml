@@ -22,6 +22,7 @@ services:
     depends_on:
       - db
       - redis
+      - celery
     env_file:
       - ./.env
 
@@ -34,12 +35,23 @@ services:
 
 redis:
   image: redis:7
-  volimes:
+  volumes:
     - redis_data:/data
   env_file:
     - ./.env
+
+celery:
+  build:
+    context: .
+    dockerfile: .
+    command: celery -A CW_DjangoReastDRF worker -l info
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env
 
 volumes:
   postgres_data:
   static_volume:
   redis_data:
+  celery_data:
